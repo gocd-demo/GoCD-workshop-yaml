@@ -1,0 +1,37 @@
+pipelines:
+  Functional_Tests_YAML:
+    group: Development
+    locking: on
+    environment_variables:
+      DEPLOY_ENVIRONMENT: functional_test
+
+    materials:
+      services:
+        pipeline: Application
+        stage: Package
+      AppGit:
+        git: https://github.com/kmugrage/GoCD-workshop-application.git
+
+    stages:
+      - DeployApplications:
+          clean_workspace: yes
+          jobs:
+            deploy:
+              tasks:
+                - exec:
+                    command: ./deploy/deploy_application.sh
+      - FunctionalTests:
+          clean_workspace: yes
+          jobs:
+            runTests:
+              run_instances: 3
+              artifacts:
+                - build:
+                    source: testoutput
+              tasks:
+                - exec:
+                    command: ./functional_test/functional_test.sh
+                    arguments:
+                      - FunctionalTests
+              tabs:
+                report: testoutput/output.txt
