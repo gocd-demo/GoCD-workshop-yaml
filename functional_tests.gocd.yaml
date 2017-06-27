@@ -1,5 +1,5 @@
 pipelines:
-  Functional_Tests_YAML:
+  Functional_Test_YAML:
     group: Development
     locking: on
     environment_variables:
